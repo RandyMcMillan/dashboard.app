@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import signal
 import subprocess
 import sys
 import venv
@@ -85,5 +86,12 @@ class SimpleBrowser(QMainWindow):
 app = QApplication(sys.argv)
 QApplication.setApplicationName('Python Web Browser')
 window = SimpleBrowser()
+
+# Allow clean shutdown with Ctrl+C from the terminal.
+signal.signal(signal.SIGINT, lambda signum, frame: app.quit())
+timer = QTimer()
+timer.start(500)
+timer.timeout.connect(lambda: None)
+
 app.exec_()
 
