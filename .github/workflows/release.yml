@@ -13,6 +13,11 @@ jobs:
   release:
     runs-on: macos-latest
 
+    # secrets are not available in step-level `if`, so mirror the values we
+    # need into env once at the job level and use env in step conditions.
+    env:
+      HAS_APPLE_CERT: ${{ secrets.APPLE_CERTIFICATE != '' }}
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -21,7 +26,7 @@ jobs:
         run: bash -n serve-drop.sh
 
       - name: Import signing certificate
-        if: ${{ secrets.APPLE_CERTIFICATE != '' }}
+        if: env.HAS_APPLE_CERT == 'true'
         env:
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
@@ -40,7 +45,7 @@ jobs:
           cp -R Contents dist/dashboard.app/Contents
 
       - name: Sign app bundle
-        if: ${{ secrets.APPLE_CERTIFICATE != '' }}
+        if: env.HAS_APPLE_CERT == 'true'
         run: |
           (cd dist/dashboard.app && ../../sign.sh)
           codesign --verify --deep --strict --verbose=2 dist/dashboard-signed.app
@@ -49,16 +54,19 @@ jobs:
         run: |
           if [ -d dist/dashboard-signed.app ]; then
             app_path=dist/dashboard-signed.app
-            archive_name=dashboard-signed.zip
           else
             app_path=dist/dashboard.app
-            archive_name=dashboard.zip
           fi
-          ditto -c -k --keepParent "$app_path" "$archive_name"
+
+          # Repackage under the final app name so the archive unpacks as
+          # dashboard.app, not dashboard-signed.app.
+          package_dir=$(mktemp -d)
+          cp -R "$app_path" "$package_dir/dashboard.app"
+          ditto -c -k --keepParent "$package_dir/dashboard.app" "dashboard-${GITHUB_REF_NAME}.zip"
+          rm -rf "$package_dir"
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            dashboard*.zip
+          files: dashboard-${{ github.ref_name }}.zip
           generate_release_notes: true
