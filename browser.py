@@ -43,6 +43,13 @@ class SimpleBrowser(QMainWindow):
     def __init__(self):
         super().__init__()
         self.browser = QWebEngineView()
+
+        # Use an off-the-record profile so multiple runs do not fight over the
+        # same on-disk cookie/SQLite database.
+        profile = QWebEngineProfile(self.browser)
+        page = QWebEnginePage(profile, self.browser)
+        self.browser.setPage(page)
+
         self.browser.setUrl(QUrl("https://www.google.com"))
         self.setCentralWidget(self.browser)
         self.showMaximized()
