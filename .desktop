@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Web Server Droplet
+Comment=Drop a file or folder to serve it locally via HTTP
+Exec=/path/to/serve-drop.sh %F
+Terminal=false
+Categories=Development;Utility;
+StartupNotify=true
