@@ -15,12 +15,15 @@ Requirements: macOS with `python3` available on `PATH`.
 
 ## Linux desktop entry
 
-`.desktop` runs `serve-drop.sh`, which can serve a dropped file/folder or prompt
-for one when launched directly.
+`.desktop` runs `serve-drop.sh`, which serves the bundled
+`Contents/Resources/index.html` by default, or a file or folder passed on the
+command line / dropped onto the script.
 
-Requirements: `zenity`, `python3`, and `nc`.
+Requirements: `python3`. Optional: `zenity` for graphical prompts and
+`xdg-open` for opening the browser automatically.
 
 ```bash
+./serve-drop.sh
 ./serve-drop.sh /path/to/site-or-file.html
 ```
 
