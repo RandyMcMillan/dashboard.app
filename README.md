@@ -1,8 +1,10 @@
 # Tailwind Admin Dashboard Droplet
 
-A macOS AppleScript droplet that serves the bundled **Tailwind Admin Dashboard**
+A MacOS AppleScript droplet that serves the bundled **Tailwind Admin Dashboard**
 (`Contents/Resources/index.html`) over a local HTTP server and opens it in the
 default browser. No drag-and-drop is required — just launch the app.
+
+![](dashboard.app.png)
 
 ## Usage (macOS)
 
