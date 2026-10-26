@@ -69,9 +69,9 @@
 	<key>NSSystemAdministrationUsageDescription</key>
 	<string>This script needs access to administer this system to run.</string>
 	<key>OSAAppletShowStartupScreen</key>
-	<true/>
+	<false/>
 	<key>OSAAppletStayOpen</key>
-	<true/>
+	<false/>
 	<key>WindowState</key>
 	<dict>
 		<key>bundleDividerCollapsed</key>
