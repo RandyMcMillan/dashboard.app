@@ -50,7 +50,9 @@ class SimpleBrowser(QMainWindow):
         page = QWebEnginePage(profile, self.browser)
         self.browser.setPage(page)
 
-        self.browser.setUrl(QUrl("https://www.google.com"))
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        index_path = os.path.join(script_dir, "Contents", "Resources", "index.html")
+        self.browser.setUrl(QUrl.fromLocalFile(index_path))
         self.setCentralWidget(self.browser)
         self.showMaximized()
 
