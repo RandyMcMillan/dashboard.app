@@ -59,9 +59,22 @@ class SimpleBrowser(QMainWindow):
 
         script_dir = os.path.dirname(os.path.abspath(__file__))
         index_path = os.path.join(script_dir, "index.html")
+        self.browser.loadFinished.connect(self.disable_page_scroll)
         self.browser.setUrl(QUrl.fromLocalFile(index_path))
         self.setCentralWidget(self.browser)
-        self.showMaximized()
+        self.resize(1200, 800)
+        self.show()
+
+    def disable_page_scroll(self):
+        """Lock the page so swiping up/down does not scroll it."""
+        js = """
+        (function() {
+            var style = document.createElement('style');
+            style.textContent = 'html, body { overflow: hidden !important; height: 100% !important; width: 100% !important; }';
+            document.head.appendChild(style);
+        })();
+        """
+        self.browser.page().runJavaScript(js)
 
         # Navigation Bar
         navbar = QToolBar()
