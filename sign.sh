@@ -23,18 +23,30 @@ fi
 echo "Using Identity: $SIGNING_IDENTITY"
 echo ""
 
-echo "Starting code signing process for: $APP_PATH"
+# Stage a clean bundle so only Contents is present at the bundle root.
+# (The working tree keeps dev files like .git, sign.sh, etc. at the root.)
+STAGE_DIR="$(mktemp -d)/dashboard.app"
+rm -rf "$STAGE_DIR"
+mkdir -p "$STAGE_DIR"
+cp -R "$APP_PATH/Contents" "$STAGE_DIR/Contents"
+
+OUTPUT_PATH="$(cd "$APP_PATH/.." && pwd)/dashboard-signed.app"
+rm -rf "$OUTPUT_PATH"
+cp -R "$STAGE_DIR" "$OUTPUT_PATH"
+
+echo "Starting code signing process for: $OUTPUT_PATH"
 
 # Remove extended attributes that often break signatures
-xattr -cr "$APP_PATH"
+xattr -cr "$OUTPUT_PATH"
 
 # Apply code signature with hardened runtime
-codesign --force --deep --sign "$SIGNING_IDENTITY" --options runtime "$APP_PATH"
+codesign --force --deep --sign "$SIGNING_IDENTITY" --options runtime "$OUTPUT_PATH"
 
 # Verify the signature
 echo ""
 echo "Verifying signature..."
-codesign --verify --deep --strict --verbose=2 "$APP_PATH"
+codesign --verify --deep --strict --verbose=2 "$OUTPUT_PATH"
 
 echo ""
 echo "Code signing complete!"
+echo "Signed app: $OUTPUT_PATH"
