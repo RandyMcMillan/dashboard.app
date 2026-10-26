@@ -1,42 +1,27 @@
 #!/bin/bash
 #
 # org.gnostr.gnostr.droplet
-
-#!/bin/bash
-
+#
 # Exit immediately if any command fails
 set -e
 
-echo "=================================================="
-echo "Searching macOS Keychain for Code Signing Identities..."
-echo "=================================================="
-echo ""
+# Configuration: Target app bundle path (adjust if running from outside the .app folder)
+APP_PATH="."
 
-# Check all valid code-signing identities present in the keychain
-echo "--- All Valid Code Signing Identities ---"
-security find-identity -v -p codesigning
-
-echo ""
 echo "=================================================="
-echo "--- Filtered: Developer ID Application Only ---"
+echo "Searching macOS Keychain for Developer ID..."
 echo "=================================================="
 
-# Filter specifically for Developer ID Application certificates
-DEVELOPER_IDS=$(security find-identity -v -p codesigning | grep "Developer ID Application" || true)
+# Automatically extract the Developer ID Application identity string from keychain
+SIGNING_IDENTITY=$(security find-identity -v -p codesigning | grep "Developer ID Application" | sed -E 's/.*"([^"]+)".*/\1/' || true)
 
-if [ -z "$DEVELOPER_IDS" ]; then
-    echo "No 'Developer ID Application' certificates found in your keychain."
-    echo "Ensure your Apple Developer certificate is installed in Keychain Access."
-else
-    echo "$DEVELOPER_IDS"
-    echo ""
-    echo "💡 Copy the string inside the quotes (e.g., \"Developer ID Application: Your Name (TEAMID)\") for your codesign command."
+if [ -z "$SIGNING_IDENTITY" ]; then
+    echo "Error: No 'Developer ID Application' certificate found in your keychain!"
+    exit 1
 fi
 
-
-# Configuration
-APP_PATH="."
-SIGNING_IDENTITY="Developer ID Application: Your Name (TEAMID)" # Use "-" for ad-hoc
+echo "Using Identity: $SIGNING_IDENTITY"
+echo ""
 
 echo "Starting code signing process for: $APP_PATH"
 
@@ -47,7 +32,9 @@ xattr -cr "$APP_PATH"
 codesign --force --deep --sign "$SIGNING_IDENTITY" --options runtime "$APP_PATH"
 
 # Verify the signature
+echo ""
 echo "Verifying signature..."
 codesign --verify --deep --strict --verbose=2 "$APP_PATH"
 
+echo ""
 echo "Code signing complete!"
