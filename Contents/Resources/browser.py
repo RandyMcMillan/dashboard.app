@@ -81,23 +81,6 @@ class SimpleBrowser(QMainWindow):
         reload_btn.triggered.connect(self.browser.reload)
         navbar.addAction(reload_btn)
 
-        # URL Bar
-        self.url_bar = QLineEdit()
-        self.url_bar.returnPressed.connect(self.navigate_to_url)
-        navbar.addWidget(self.url_bar)
-
-        # Update URL bar when page changes
-        self.browser.urlChanged.connect(self.update_url)
-
-    def navigate_to_url(self):
-        url = self.url_bar.text()
-        if not url.startswith('http'):
-            url = 'https://' + url
-        self.browser.setUrl(QUrl(url))
-
-    def update_url(self, q):
-        self.url_bar.setText(q.toString())
-
     def closeEvent(self, event):
         QApplication.quit()
         event.accept()
