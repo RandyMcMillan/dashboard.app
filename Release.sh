@@ -171,7 +171,13 @@ fi
 
 mkdir -p "$BUILD_DIR"
 ZIP_NAME="$BUILD_DIR/dashboard-${TAG}.zip"
-ditto -c -k --keepParent "$SIGNED_APP" "$ZIP_NAME"
+
+# Repackage the signed bundle under the final app name so the release zip
+# unpacks as dashboard.app instead of dashboard-signed.app.
+PACKAGE_DIR="$(mktemp -d)"
+cp -R "$SIGNED_APP" "$PACKAGE_DIR/dashboard.app"
+ditto -c -k --keepParent "$PACKAGE_DIR/dashboard.app" "$ZIP_NAME"
+rm -rf "$PACKAGE_DIR"
 
 if ! git rev-parse "$TAG" >/dev/null 2>&1; then
     git tag "$TAG"
