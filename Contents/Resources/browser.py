@@ -6,10 +6,16 @@ import sys
 import venv
 
 
+def venv_directory():
+    """Return a venv location outside the app bundle so signing is not affected."""
+    support_dir = os.path.expanduser("~/Library/Application Support/dashboard.app")
+    os.makedirs(support_dir, exist_ok=True)
+    return os.path.join(support_dir, ".venv-browser")
+
+
 def ensure_venv():
     """Run from a local virtual environment that owns PyQt5/PyQtWebEngine."""
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    venv_dir = os.path.join(script_dir, ".venv-browser")
+    venv_dir = venv_directory()
     venv_python = os.path.join(venv_dir, "bin", "python")
 
     # If we are already inside the target venv, just try the imports.
@@ -51,7 +57,7 @@ class SimpleBrowser(QMainWindow):
         self.browser.setPage(page)
 
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        index_path = os.path.join(script_dir, "Contents", "Resources", "index.html")
+        index_path = os.path.join(script_dir, "index.html")
         self.browser.setUrl(QUrl.fromLocalFile(index_path))
         self.setCentralWidget(self.browser)
         self.showMaximized()
