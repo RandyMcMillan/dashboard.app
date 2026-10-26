@@ -10,7 +10,7 @@
 		</data>
 		<key>Resources/Scripts/main.scpt</key>
 		<data>
-		hKHuW8F1IElbu8svEnU/bCny2dw=
+		UF3ulnE2Gv8U7mMmWW0SqNT3jA8=
 		</data>
 		<key>Resources/description.rtfd/TXT.rtf</key>
 		<data>
@@ -23,6 +23,10 @@
 		<key>Resources/droplet.rsrc</key>
 		<data>
 		WYZp7vBjZwoGRaAmFswMk3T3S24=
+		</data>
+		<key>Resources/index.html</key>
+		<data>
+		R74XOQ2Oyx5FTxgTkUpkSBmIdIo=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -42,11 +46,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			hKHuW8F1IElbu8svEnU/bCny2dw=
+			UF3ulnE2Gv8U7mMmWW0SqNT3jA8=
 			</data>
 			<key>hash2</key>
 			<data>
-			JEHRdbz1zf3oA0pVFuUnkWCcTn6SuFzRh8gAisWuZs0=
+			GsWTa0EwP6RaZfplNSlvMrffWk3z1QuRKdCSqTRrQPM=
 			</data>
 		</dict>
 		<key>Resources/description.rtfd/TXT.rtf</key>
@@ -80,6 +84,17 @@
 			<key>hash2</key>
 			<data>
 			7gvBZVYUZDRQG0kBz+j4UpUOYoYHreAWSSVFHRpK4Gg=
+			</data>
+		</dict>
+		<key>Resources/index.html</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			R74XOQ2Oyx5FTxgTkUpkSBmIdIo=
+			</data>
+			<key>hash2</key>
+			<data>
+			MKfYAPDdmhqmiF1uLB3K8JTdWwpP6/QKoYAZ9fH22Vg=
 			</data>
 		</dict>
 	</dict>
