@@ -15,15 +15,12 @@ Requirements: macOS with `python3` available on `PATH`.
 
 ## Linux desktop entry
 
-`.desktop` runs `serve-drop.sh`, which serves the bundled
-`Contents/Resources/index.html` by default, or a file or folder passed on the
-command line / dropped onto the script.
+`.desktop` runs `serve-drop.sh`, which can serve a dropped file/folder or prompt
+for one when launched directly.
 
-Requirements: `python3`. Optional: `zenity` for graphical prompts and
-`xdg-open` for opening the browser automatically.
+Requirements: `zenity`, `python3`, and `nc`.
 
 ```bash
-./serve-drop.sh
 ./serve-drop.sh /path/to/site-or-file.html
 ```
 
@@ -37,14 +34,18 @@ The script stages a clean bundle (only `Contents`) so dev files such as `.git`
 do not break signing, signs it with your `Developer ID Application` identity, and
 writes the result to `../dashboard-signed.app`.
 
-## Release
+## Release signing (macOS)
 
-`Release.sh` automates signing, optional notarization, and publishing to GitHub
-Releases. See `RELEASE.md` for details.
+#### Generate an [App-Specific Passwords](https://account.apple.com/account/manage)
 
-```bash
-./Release.sh --check
-./Release.sh --notarize --password "app-specific-password"
+#### ***!!! After !!!*** [release.yml](https://github.com/RandyMcMillan/dashboard.app/blob/main/.github/workflows/release.yml) succeeds in publishing a tagged release...
+
+####  [https://github.com/RandyMcMillan/dashboard.app/releases](https://github.com/RandyMcMillan/dashboard.app/releases)
+
+###### run:
+
+```
+./Release.sh --notarize --password ####-####-####-####
 ```
 
 ## Project layout
