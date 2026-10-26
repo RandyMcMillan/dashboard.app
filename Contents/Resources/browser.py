@@ -62,22 +62,11 @@ class SimpleBrowser(QMainWindow):
         self.browser.loadFinished.connect(self.disable_page_scroll)
         self.browser.setUrl(QUrl.fromLocalFile(index_path))
         self.setCentralWidget(self.browser)
-        self.resize(1200, 800)
-        self.show()
-
-    def disable_page_scroll(self):
-        """Lock the page so swiping up/down does not scroll it."""
-        js = """
-        (function() {
-            var style = document.createElement('style');
-            style.textContent = 'html, body { overflow: hidden !important; height: 100% !important; width: 100% !important; }';
-            document.head.appendChild(style);
-        })();
-        """
-        self.browser.page().runJavaScript(js)
 
         # Navigation Bar
         navbar = QToolBar()
+        navbar.setMovable(False)
+        navbar.setFloatable(False)
         self.addToolBar(navbar)
 
         # Back Button
@@ -94,6 +83,26 @@ class SimpleBrowser(QMainWindow):
         reload_btn = QAction('Reload ↻', self)
         reload_btn.triggered.connect(self.browser.reload)
         navbar.addAction(reload_btn)
+
+        self.resize(1200, 800)
+        self.show()
+
+    def disable_page_scroll(self):
+        """Lock the page so swiping up/down does not scroll it."""
+        if getattr(self, '_scroll_disabled', False):
+            return
+        self._scroll_disabled = True
+
+        js = """
+        (function() {
+            if (document.getElementById('dashboard-no-scroll')) return;
+            var style = document.createElement('style');
+            style.id = 'dashboard-no-scroll';
+            style.textContent = 'html, body { overflow: hidden !important; height: 100% !important; width: 100% !important; }';
+            document.head.appendChild(style);
+        })();
+        """
+        self.browser.page().runJavaScript(js)
 
     def closeEvent(self, event):
         QApplication.quit()
