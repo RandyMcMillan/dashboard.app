@@ -50,3 +50,4 @@ codesign --verify --deep --strict --verbose=2 "$OUTPUT_PATH"
 echo ""
 echo "Code signing complete!"
 echo "Signed app: $OUTPUT_PATH"
+cp $OUTPUT_PATH/* .
