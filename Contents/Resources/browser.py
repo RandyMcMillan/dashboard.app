@@ -98,7 +98,12 @@ class SimpleBrowser(QMainWindow):
     def update_url(self, q):
         self.url_bar.setText(q.toString())
 
+    def closeEvent(self, event):
+        QApplication.quit()
+        event.accept()
+
 app = QApplication(sys.argv)
+app.setQuitOnLastWindowClosed(True)
 QApplication.setApplicationName('Python Web Browser')
 window = SimpleBrowser()
 
