@@ -10,7 +10,15 @@
 		</data>
 		<key>Resources/Scripts/main.scpt</key>
 		<data>
-		ZqJnYsoZAnwyzAsR1MLGagir2+s=
+		VtmevREIOfo+R4X0Vh70OIFgTA4=
+		</data>
+		<key>Resources/__pycache__/browser.cpython-315.pyc</key>
+		<data>
+		r+/62w0HqpKKCAh7H9CHUQhN3YI=
+		</data>
+		<key>Resources/browser.py</key>
+		<data>
+		BQLrkn/ZSJgS/ID5zaXR5ACkAlE=
 		</data>
 		<key>Resources/description.rtfd/TXT.rtf</key>
 		<data>
@@ -46,11 +54,33 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			ZqJnYsoZAnwyzAsR1MLGagir2+s=
+			VtmevREIOfo+R4X0Vh70OIFgTA4=
 			</data>
 			<key>hash2</key>
 			<data>
-			W64LwsTe6+TyRdfmKkkYRRTAUFyIzmyg309duYWRRjk=
+			3CYnuekJX4Q9h5V1rb8OexNDwWLemUkshPeHA2Ot7Yc=
+			</data>
+		</dict>
+		<key>Resources/__pycache__/browser.cpython-315.pyc</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			r+/62w0HqpKKCAh7H9CHUQhN3YI=
+			</data>
+			<key>hash2</key>
+			<data>
+			09AT22/v2gjY6FxZlo181tViRjEErxsyDF+1cUNCmkE=
+			</data>
+		</dict>
+		<key>Resources/browser.py</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			BQLrkn/ZSJgS/ID5zaXR5ACkAlE=
+			</data>
+			<key>hash2</key>
+			<data>
+			ZiHfV6IbWQn4XRPOZ5JqB4VDrdSoxD/1JnsXcPX9PLQ=
 			</data>
 		</dict>
 		<key>Resources/description.rtfd/TXT.rtf</key>
