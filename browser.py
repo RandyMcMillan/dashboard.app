@@ -1,4 +1,39 @@
+#!/usr/bin/env python3
+import os
+import subprocess
 import sys
+import venv
+
+
+def ensure_venv():
+    """Run from a local virtual environment that owns PyQt5/PyQtWebEngine."""
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    venv_dir = os.path.join(script_dir, ".venv-browser")
+    venv_python = os.path.join(venv_dir, "bin", "python")
+
+    # If we are already inside the target venv, just try the imports.
+    if sys.executable == venv_python:
+        return
+
+    # Create the venv if it does not exist.
+    if not os.path.exists(venv_python):
+        print("Creating virtual environment in", venv_dir)
+        venv.create(venv_dir, with_pip=True)
+
+    # Make sure the dependencies are installed in the venv.
+    required = ["PyQt5", "PyQtWebEngine"]
+    print("Installing dependencies into virtual environment...")
+    subprocess.check_call(
+        [venv_python, "-m", "pip", "install", "--upgrade"] + required
+    )
+
+    # Restart this script using the venv interpreter.
+    print("Restarting with virtual environment interpreter...")
+    os.execv(venv_python, [venv_python] + sys.argv)
+
+
+ensure_venv()
+
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtWebEngineWidgets import *
