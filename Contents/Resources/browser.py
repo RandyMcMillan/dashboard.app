@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import ctypes
-import ctypes.util
 import os
 import signal
 import subprocess
@@ -91,8 +90,8 @@ class SimpleBrowser(QMainWindow):
 def hide_dock_icon():
     """Run without a Dock icon on macOS."""
     try:
-        appkit = ctypes.cdll.LoadLibrary(ctypes.util.find_library("AppKit"))
-        objc = ctypes.cdll.LoadLibrary(ctypes.util.find_library("objc"))
+        appkit = ctypes.cdll.LoadLibrary("/System/Library/Frameworks/AppKit.framework/AppKit")
+        objc = ctypes.cdll.LoadLibrary("/usr/lib/libobjc.dylib")
 
         objc.objc_getClass.restype = ctypes.c_void_p
         objc.sel_registerName.restype = ctypes.c_void_p
@@ -111,11 +110,13 @@ def hide_dock_icon():
         pass
 
 
-hide_dock_icon()
-
 app = QApplication(sys.argv)
 app.setQuitOnLastWindowClosed(True)
 QApplication.setApplicationName('Python Web Browser')
+
+# Hide the Dock icon after QApplication owns the shared NSApplication instance.
+hide_dock_icon()
+
 window = SimpleBrowser()
 
 # Allow clean shutdown with Ctrl+C from the terminal.
