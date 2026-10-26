@@ -9,14 +9,20 @@ set -e
 APP_PATH="."
 
 echo "=================================================="
-echo "Searching macOS Keychain for Developer ID..."
+echo "Searching macOS Keychain for signing identity..."
 echo "=================================================="
 
-# Automatically extract the Developer ID Application identity string from keychain
-SIGNING_IDENTITY=$(security find-identity -v -p codesigning | grep "Developer ID Application" | sed -E 's/.*"([^"]+)".*/\1/' || true)
+# Use an explicitly provided identity, otherwise discover a Developer ID
+# Application certificate from the keychain.
+SIGNING_IDENTITY="${SIGNING_IDENTITY:-}"
 
 if [ -z "$SIGNING_IDENTITY" ]; then
-    echo "Error: No 'Developer ID Application' certificate found in your keychain!"
+    SIGNING_IDENTITY=$(security find-identity -v -p codesigning | awk '/Developer ID Application:/{print $2; exit}')
+fi
+
+if [ -z "$SIGNING_IDENTITY" ]; then
+    echo "Error: No 'Developer ID Application' certificate found in your keychain!" >&2
+    echo "Set SIGNING_IDENTITY or install a Developer ID Application certificate." >&2
     exit 1
 fi
 

@@ -37,6 +37,16 @@ The script stages a clean bundle (only `Contents`) so dev files such as `.git`
 do not break signing, signs it with your `Developer ID Application` identity, and
 writes the result to `../dashboard-signed.app`.
 
+## Release
+
+`Release.sh` automates signing, optional notarization, and publishing to GitHub
+Releases. See `RELEASE.md` for details.
+
+```bash
+./Release.sh --check
+./Release.sh --notarize --password "app-specific-password"
+```
+
 ## Project layout
 
 ```text

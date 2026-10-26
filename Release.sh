@@ -116,8 +116,32 @@ if [ -z "$TEAM_ID" ]; then
     TEAM_ID="M684FYCYG6"
 fi
 
+# Choose a signing identity when one was not supplied. Developer ID Application
+# is required for notarization; otherwise prefer Apple Development for local
+# testing, falling back to Developer ID Application.
+if [ -z "$SIGNING_IDENTITY" ]; then
+    if [ "$NOTARIZE" -eq 1 ]; then
+        SIGNING_IDENTITY=$(security find-identity -v -p codesigning | awk '/Developer ID Application:/{print $2; exit}')
+    else
+        SIGNING_IDENTITY=$(security find-identity -v -p codesigning | awk '/Apple Development:/{print $2; exit}')
+    fi
+fi
+if [ -z "$SIGNING_IDENTITY" ]; then
+    SIGNING_IDENTITY=$(security find-identity -v -p codesigning | awk '/Developer ID Application:/{print $2; exit}')
+fi
+if [ -z "$SIGNING_IDENTITY" ]; then
+    if [ "$NOTARIZE" -eq 1 ]; then
+        echo "No Developer ID Application signing identity was found in your keychain." >&2
+        echo "Install a Developer ID Application certificate, or rerun without --notarize for local signing only." >&2
+    else
+        echo "Unable to find an Apple Development or Developer ID Application codesigning identity. Set SIGNING_IDENTITY and retry." >&2
+    fi
+    security find-identity -v -p codesigning >&2
+    exit 1
+fi
+
 # sign.sh stages a clean bundle containing only Contents and signs it.
-(cd "$APP_ROOT" && ./sign.sh)
+(cd "$APP_ROOT" && SIGNING_IDENTITY="$SIGNING_IDENTITY" ./sign.sh)
 
 SIGNED_APP="$APP_ROOT/../dashboard-signed.app"
 if [ ! -d "$SIGNED_APP" ]; then
