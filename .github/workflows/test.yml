@@ -1,0 +1,66 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+
+      - name: Syntax check
+        run: bash -n serve-drop.sh
+
+      - name: ShellCheck
+        run: shellcheck serve-drop.sh
+
+      - name: Serve the bundled dashboard
+        run: |
+          set -e
+          sleep 10 | ./serve-drop.sh > /tmp/serve.log 2>&1 &
+          server_pid=$!
+
+          for _ in $(seq 1 50); do
+            server_url="$(grep -oE 'http://localhost:[0-9]+/[^ ]*' /tmp/serve.log | head -n 1 || true)"
+            if [ -n "$server_url" ] && curl -fsS "$server_url" >/dev/null; then
+              break
+            fi
+            sleep 0.2
+          done
+
+          server_url="$(grep -oE 'http://localhost:[0-9]+/[^ ]*' /tmp/serve.log | head -n 1)"
+          curl -fsS "$server_url" -o /tmp/index.html
+          grep -q 'Tailwind Admin Dashboard' /tmp/index.html
+
+          kill "$server_pid" 2>/dev/null || true
+          wait "$server_pid" 2>/dev/null || true
+
+      - name: Serve a custom file
+        run: |
+          set -e
+          printf '<!doctype html><html><body>custom</body></html>\n' > /tmp/custom.html
+
+          sleep 10 | ./serve-drop.sh /tmp/custom.html > /tmp/serve-custom.log 2>&1 &
+          server_pid=$!
+
+          for _ in $(seq 1 50); do
+            server_url="$(grep -oE 'http://localhost:[0-9]+/[^ ]*' /tmp/serve-custom.log | head -n 1 || true)"
+            if [ -n "$server_url" ] && curl -fsS "$server_url" >/dev/null; then
+              break
+            fi
+            sleep 0.2
+          done
+
+          server_url="$(grep -oE 'http://localhost:[0-9]+/[^ ]*' /tmp/serve-custom.log | head -n 1)"
+          curl -fsS "$server_url" -o /tmp/custom-downloaded.html
+          grep -q 'custom' /tmp/custom-downloaded.html
+
+          kill "$server_pid" 2>/dev/null || true
+          wait "$server_pid" 2>/dev/null || true

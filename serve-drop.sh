@@ -57,12 +57,7 @@ cd "$WEB_ROOT" || exit 1
 python3 -m http.server "$PORT" --bind 127.0.0.1 >/dev/null 2>&1 &
 SERVER_PID=$!
 
-# shellcheck disable=SC2329
-cleanup() {
-    kill "$SERVER_PID" 2>/dev/null || true
-    wait "$SERVER_PID" 2>/dev/null || true
-}
-trap cleanup EXIT INT TERM
+trap 'kill "$SERVER_PID" 2>/dev/null || true; wait "$SERVER_PID" 2>/dev/null || true' EXIT INT TERM
 
 # Give the server a brief moment to start.
 for _ in {1..50}; do
@@ -91,7 +86,7 @@ if command -v zenity >/dev/null 2>&1; then
 else
     printf 'Web server started!\nRoot: %s\nURL: %s\nPress Enter to stop the server and quit.\n' \
         "$WEB_ROOT" "$SERVER_URL"
-    read -r _
+    read -r _ || true
 fi
 
 exit 0
