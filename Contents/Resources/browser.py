@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import ctypes
+import ctypes.util
 import os
 import signal
 import subprocess
@@ -84,6 +86,32 @@ class SimpleBrowser(QMainWindow):
     def closeEvent(self, event):
         QApplication.quit()
         event.accept()
+
+
+def hide_dock_icon():
+    """Run without a Dock icon on macOS."""
+    try:
+        appkit = ctypes.cdll.LoadLibrary(ctypes.util.find_library("AppKit"))
+        objc = ctypes.cdll.LoadLibrary(ctypes.util.find_library("objc"))
+
+        objc.objc_getClass.restype = ctypes.c_void_p
+        objc.sel_registerName.restype = ctypes.c_void_p
+        objc.objc_msgSend.restype = ctypes.c_void_p
+        objc.objc_msgSend.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+
+        ns_app_class = objc.objc_getClass(b"NSApplication")
+        shared_app_sel = objc.sel_registerName(b"sharedApplication")
+        ns_app = objc.objc_msgSend(ns_app_class, shared_app_sel)
+
+        # NSApplicationActivationPolicyAccessory = 1 (no Dock icon, windows allowed)
+        set_policy_sel = objc.sel_registerName(b"setActivationPolicy:")
+        objc.objc_msgSend.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_long]
+        objc.objc_msgSend(ns_app, set_policy_sel, 1)
+    except Exception:
+        pass
+
+
+hide_dock_icon()
 
 app = QApplication(sys.argv)
 app.setQuitOnLastWindowClosed(True)
