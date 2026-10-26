@@ -4,17 +4,16 @@ on:
   push:
     tags:
       - 'v*'
-  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
   release:
-    runs-on: macos-latest
+    runs-on: macos-15
 
     steps:
-      - name: Check out repository
+      - name: Check out source
         uses: actions/checkout@v4
 
       - name: Validate helper script
@@ -43,22 +42,45 @@ jobs:
         if: ${{ secrets.APPLE_CERTIFICATE != '' }}
         run: |
           (cd dist/dashboard.app && ../../sign.sh)
-          codesign --verify --deep --strict --verbose=2 dist/dashboard-signed.app
+
+      - name: Notarize app bundle
+        if: ${{ secrets.APPLE_CERTIFICATE != '' && secrets.NOTARY_PASSWORD != '' }}
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          TEAM_ID: ${{ secrets.TEAM_ID }}
+          NOTARY_PASSWORD: ${{ secrets.NOTARY_PASSWORD }}
+        run: |
+          APPLE_ID="${APPLE_ID:-randymcmillan1@mac.com}"
+          TEAM_ID="${TEAM_ID:-M684FYCYG6}"
+          : "${NOTARY_PASSWORD:?NOTARY_PASSWORD is required}"
+
+          APP_PATH="dist/dashboard-signed.app"
+          NOTARIZE_ZIP="dist/dashboard-notarize.zip"
+
+          ditto -c -k --keepParent "$APP_PATH" "$NOTARIZE_ZIP"
+          xcrun notarytool submit "$NOTARIZE_ZIP" \
+            --apple-id "$APPLE_ID" \
+            --team-id "$TEAM_ID" \
+            --password "$NOTARY_PASSWORD" \
+            --wait
+          xcrun stapler staple "$APP_PATH"
+          codesign --verify --deep --strict --verbose=2 "$APP_PATH"
+          spctl --assess --type execute --verbose=4 "$APP_PATH"
 
       - name: Package app bundle
         run: |
           if [ -d dist/dashboard-signed.app ]; then
             app_path=dist/dashboard-signed.app
-            archive_name=dashboard-signed.zip
           else
             app_path=dist/dashboard.app
-            archive_name=dashboard.zip
           fi
-          ditto -c -k --keepParent "$app_path" "$archive_name"
+          ditto -c -k --keepParent "$app_path" "dashboard-${GITHUB_REF_NAME}.zip"
 
       - name: Create GitHub release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            dashboard*.zip
-          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            --title "Dashboard ${GITHUB_REF_NAME}" \
+            --generate-notes \
+            "dashboard-${GITHUB_REF_NAME}.zip"
