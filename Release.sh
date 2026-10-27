@@ -204,3 +204,4 @@ REPO_NAME_WITH_OWNER=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
 ASSET_NAME=$(basename "$ZIP_NAME")
 RELEASE_ASSET_URL="https://github.com/${REPO_NAME_WITH_OWNER}/releases/download/${TAG}/${ASSET_NAME}"
 echo "Release asset: ${RELEASE_ASSET_URL}"
+open $RELEASE_ASSET_URL
