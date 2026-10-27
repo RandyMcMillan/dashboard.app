@@ -63,27 +63,6 @@ class SimpleBrowser(QMainWindow):
         self.browser.setUrl(QUrl.fromLocalFile(index_path))
         self.setCentralWidget(self.browser)
 
-        # Navigation Bar
-        navbar = QToolBar()
-        navbar.setMovable(False)
-        navbar.setFloatable(False)
-        self.addToolBar(navbar)
-
-        # Back Button
-        back_btn = QAction('← Back', self)
-        back_btn.triggered.connect(self.browser.back)
-        navbar.addAction(back_btn)
-
-        # Forward Button
-        forward_btn = QAction('Forward →', self)
-        forward_btn.triggered.connect(self.browser.forward)
-        navbar.addAction(forward_btn)
-
-        # Reload Button
-        reload_btn = QAction('Reload ↻', self)
-        reload_btn.triggered.connect(self.browser.reload)
-        navbar.addAction(reload_btn)
-
         self.resize(1200, 800)
         self.show()
 
