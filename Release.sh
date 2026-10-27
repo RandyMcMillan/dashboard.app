@@ -148,7 +148,7 @@ git add Contents
 git add .
 git commit -m $TAG
 git tag $TAG
-git push --tags
+git push --all --tags
 
 SIGNED_APP="$APP_ROOT/../dashboard-signed.app"
 if [ ! -d "$SIGNED_APP" ]; then
