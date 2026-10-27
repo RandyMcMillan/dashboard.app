@@ -29,7 +29,7 @@ def ensure_venv():
         venv.create(venv_dir, with_pip=True)
 
     # Make sure the dependencies are installed in the venv.
-    required = ["PyQt5", "PyQtWebEngine"]
+    required = ["PyQt6", "PyQt6-WebEngine"]
     print("Installing dependencies into virtual environment...")
     subprocess.check_call(
         [venv_python, "-m", "pip", "install", "--upgrade"] + required
@@ -92,13 +92,16 @@ if _os.path.exists(_ipfs_bin):
     except Exception as exc:
         print("IPFS startup failed:", exc)
 
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtWebEngineWidgets import *
+from PyQt6.QtCore import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtWebEngineWidgets import *
+from PyQt6.QtWebEngineCore import *
 
 class SimpleBrowser(QMainWindow):
     def __init__(self):
         super().__init__()
+        global webui_url, daemon_proc
+
         self.browser = QWebEngineView()
 
         # Use an off-the-record profile so multiple runs do not fight over the
@@ -107,7 +110,6 @@ class SimpleBrowser(QMainWindow):
         page = QWebEnginePage(profile, self.browser)
         self.browser.setPage(page)
 
-        global webui_url
         if webui_url:
             self.browser.setUrl(QUrl(webui_url))
         else:
@@ -119,6 +121,7 @@ class SimpleBrowser(QMainWindow):
 
         self.resize(1200, 800)
         self.show()
+        return
 
     def disable_page_scroll(self):
         """Lock the page so swiping up/down does not scroll it."""
@@ -187,5 +190,5 @@ timer = QTimer()
 timer.start(500)
 timer.timeout.connect(lambda: None)
 
-app.exec_()
+app.exec()
 
