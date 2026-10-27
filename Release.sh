@@ -8,6 +8,7 @@
 set -eu
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd -P)"
+echo SCRIPT_DIR=$SCRIPT_DIR
 APP_ROOT="$SCRIPT_DIR"
 BUILD_DIR="$APP_ROOT/build"
 APP_NAME="dashboard.app"
@@ -142,6 +143,10 @@ fi
 
 # sign.sh stages a clean bundle containing only Contents and signs it.
 (cd "$APP_ROOT" && SIGNING_IDENTITY="$SIGNING_IDENTITY" ./sign.sh)
+
+git add Contents
+git add .
+git commit -m $TAG
 
 SIGNED_APP="$APP_ROOT/../dashboard-signed.app"
 if [ ! -d "$SIGNED_APP" ]; then
