@@ -18,7 +18,7 @@
 		</data>
 		<key>Resources/browser.py</key>
 		<data>
-		0vZCmbLxC7MHhSGSe9dW7bLSjxo=
+		6Knejz9qXAu5zEgmMolgExf0SzY=
 		</data>
 		<key>Resources/description.rtfd/TXT.rtf</key>
 		<data>
@@ -39,6 +39,15 @@
 	</dict>
 	<key>files2</key>
 	<dict>
+		<key>MacOS/ipfs</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			CciuO21tw1VzsB7iR7vOPtmQlyQ=
+			</data>
+			<key>requirement</key>
+			<string>identifier ipfs and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = M684FYCYG6</string>
+		</dict>
 		<key>Resources/Assets.car</key>
 		<dict>
 			<key>hash</key>
@@ -76,11 +85,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			0vZCmbLxC7MHhSGSe9dW7bLSjxo=
+			6Knejz9qXAu5zEgmMolgExf0SzY=
 			</data>
 			<key>hash2</key>
 			<data>
-			ijylV774zWW8E1iziGMRz2+vp7EWoxaWlZcT5F0cELI=
+			FPbk3MCWZuvz4uxfsYBeAUA/G2zBDGGw7dZPx28UAaE=
 			</data>
 		</dict>
 		<key>Resources/description.rtfd/TXT.rtf</key>
@@ -126,6 +135,11 @@
 			<data>
 			MKfYAPDdmhqmiF1uLB3K8JTdWwpP6/QKoYAZ9fH22Vg=
 			</data>
+		</dict>
+		<key>Resources/ipfs</key>
+		<dict>
+			<key>symlink</key>
+			<string>../MacOS/ipfs</string>
 		</dict>
 	</dict>
 	<key>rules</key>

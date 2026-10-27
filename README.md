@@ -1,19 +1,24 @@
 # Tailwind Admin Dashboard Droplet
 
-A MacOS AppleScript droplet that serves the bundled **Tailwind Admin Dashboard**
-(`Contents/Resources/index.html`) over a local HTTP server and opens it in the
-default browser. No drag-and-drop is required — just launch the app.
+A MacOS AppleScript droplet that now bundles **Kubo (IPFS)** and runs the
+IPFS **WebUI** in its embedded browser. The bundled Tailwind Admin Dashboard
+(`Contents/Resources/index.html`) remains available as a fallback.
 
 ![](dashboard.app.png)
 
 ## Usage (macOS)
 
 1. Launch `dashboard.app` (or `dashboard-signed.app` after signing).
-2. A local Python HTTP server starts on the first free port beginning at `8080`.
-3. Your default browser opens `http://localhost:<port>/index.html`.
-4. Click **Stop Server** in the dialog to stop the server and quit.
+2. The bundled `ipfs` daemon starts (initializing
+   `~/Library/Application Support/dashboard.app/ipfsrepo` on first run).
+3. The IPFS WebUI opens in the droplet window at
+   `http://127.0.0.1:5001/webui`.
+4. Click **Stop Server** in the window to stop the daemon and quit.
 
-Requirements: macOS with `python3` available on `PATH`.
+Requirements: macOS with `python3` available on `PATH` and the bundled
+`Contents/MacOS/ipfs` binary. The Python virtual environment in
+`~/Library/Application Support/dashboard.app/.venv-browser` provides `PyQt6`
+and `PyQt6-WebEngine`.
 
 ## Linux desktop entry
 
@@ -55,10 +60,13 @@ writes the result to `../dashboard-signed.app`.
 ```text
 dashboard.app/
 ├── Contents/
-│   ├── MacOS/droplet          # AppleScript applet executable
+│   ├── MacOS/
+│   │   ├── droplet          # AppleScript applet executable
+│   │   └── ipfs             # Bundled Kubo IPFS binary
 │   ├── Resources/
-│   │   ├── index.html         # Tailwind Admin Dashboard
-│   │   └── Scripts/main.scpt  # Droplet logic
+│   │   ├── browser.py       # PyQt6 launcher + IPFS daemon management
+│   │   ├── index.html       # Tailwind Admin Dashboard (fallback)
+│   │   └── Scripts/main.scpt # Droplet logic
 │   └── Info.plist
 ├── serve-drop.sh              # Linux/Unix helper
 ├── sign.sh                    # macOS signing helper
